@@ -1,0 +1,84 @@
+from flask import Flask, request
+import os
+from flask_cors import CORS
+
+def create_app():
+    app = Flask(__name__)
+    
+    allowed_origins = os.getenv("ALLOWED_ORIGINS", "*")
+    
+    supports_credentials = False if allowed_origins.strip() == "*" else True
+    CORS(
+        app,
+        resources={r"/*": {"origins": allowed_origins}},
+        expose_headers=["Content-Disposition", "Content-Type"],
+        supports_credentials=supports_credentials,
+    )
+    
+    @app.after_request
+    def _add_cors_headers(response):
+        
+        origin = request.headers.get("Origin")
+        allowed_list = [o.strip() for o in allowed_origins.split(",") if o.strip()]
+        if "Access-Control-Allow-Origin" not in response.headers:
+            if "*" in allowed_list:
+                response.headers["Access-Control-Allow-Origin"] = "*"
+            elif origin and origin in allowed_list:
+                response.headers["Access-Control-Allow-Origin"] = origin
+            else:
+                
+                response.headers["Access-Control-Allow-Origin"] = allowed_origins
+        if "Access-Control-Allow-Headers" not in response.headers:
+            response.headers["Access-Control-Allow-Headers"] = (
+                "Content-Type,Authorization,Accept,Origin"
+            )
+        if "Access-Control-Allow-Methods" not in response.headers:
+            response.headers["Access-Control-Allow-Methods"] = "GET,POST,OPTIONS"
+        if "Access-Control-Expose-Headers" not in response.headers:
+            response.headers["Access-Control-Expose-Headers"] = "Content-Disposition"
+        return response
+
+    @app.route("/", methods=["GET", "HEAD"])
+    def home():
+        return {"message": "Server running"}, 200
+    
+    # Health check endpoint to verify server + CORS headers quickly
+    @app.route("/health", methods=["GET", "OPTIONS"])
+    def _health():
+        return {"status": "ok"}, 200
+    
+    app.config["MAX_CONTENT_LENGTH"] = 10 * 1024 * 1024
+    
+    from blueprints.pdf import pdf_bp
+    from blueprints.pdf_to_docx import pdf_docx_bp
+    from blueprints.docx_to_pdf import docx_pdf_bp
+    from blueprints.image import image_bp
+    from blueprints.removebg import remove_bp
+    from blueprints.rotate_flip import rotate_flip_bp
+    from blueprints.pdf_rotate_flip import pdf_rotate_flip_bp
+    from blueprints.dpi_converter import dpi_bp
+    from blueprints.metadata_viewer import metadata_bp
+    from blueprints.merge_pdf import merge_pdf_bp
+    from blueprints.split_pdf import split_pdf_bp
+    from blueprints.watermark import watermark_bp
+    from blueprints.sign import sign_bp
+    from blueprints.markdown import markdown_bp
+    from blueprints.protect_pdf import protect_pdf_bp
+
+    app.register_blueprint(pdf_bp)
+    app.register_blueprint(pdf_docx_bp)
+    app.register_blueprint(docx_pdf_bp)
+    app.register_blueprint(image_bp)
+    app.register_blueprint(remove_bp)
+    app.register_blueprint(rotate_flip_bp)
+    app.register_blueprint(pdf_rotate_flip_bp)
+    app.register_blueprint(dpi_bp)
+    app.register_blueprint(metadata_bp)
+    app.register_blueprint(merge_pdf_bp)
+    app.register_blueprint(split_pdf_bp)
+    app.register_blueprint(watermark_bp)
+    app.register_blueprint(sign_bp)
+    app.register_blueprint(markdown_bp)
+    app.register_blueprint(protect_pdf_bp)
+
+    return app
