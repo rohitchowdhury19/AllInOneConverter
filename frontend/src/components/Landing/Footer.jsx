@@ -22,15 +22,15 @@ const Footer = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12">
           {/* Brand */}
           <div className="space-y-4">
-            <Link to="/" className="flex items-center gap-2 group">
-              <div className="p-2 bg-gradient-to-br from-purple-100 to-purple-50 rounded-xl">
-                <FileText className="w-6 h-6 text-purple-600" />
-              </div>
+           <Link to="/" className="flex items-center gap-2 group">
+              <div className="p-2 bg-gradient-to-br from-purple-100 to-purple-50 dark:from-slate-800 dark:to-slate-700 rounded-xl group-hover:shadow-lg transition-all duration-300">
+              <FileText className="w-6 h-6 text-purple-600 dark:text-purple-400" />
+                </div>
 
-              <span className="text-2xl font-bold bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent">
-                AllInOneConverter
-              </span>
-            </Link>
+                <span className="text-2xl font-bold bg-gradient-to-r from-slate-900 via-slate-700 to-slate-600 dark:from-white dark:via-slate-200 dark:to-purple-300 bg-clip-text text-transparent">
+                 AllInOneConverter
+                  </span>
+                  </Link>
 
             <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
               All-in-one toolkit for PDF, image and document conversion.
