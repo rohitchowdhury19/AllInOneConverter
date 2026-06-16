@@ -1,8 +1,5 @@
 ## AllInoneConverter & Image Tools
 
-<p align="center">
-  <img src="assets/banner.png" alt="PDF to PNG Banner" width="100%">
-</p>
 
 ---
 
